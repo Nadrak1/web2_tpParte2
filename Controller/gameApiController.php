@@ -11,15 +11,6 @@ class gameApiController {
         $this->view = new Apiview();
     }
 
-    function orderBy($sort,$order){
-
-        if($order == "DESC" || $order == "desc" || $order == "ASC" ||  $order == "asc" ){
-                $game = $this->model->orderBy($sort,$order);
-                $this->view->response($game,200);
-        }else{
-            $this->view->response("es invalido el parametro",400);
-        }
-    }
 
     function showAllGames($params = null){ 
         
@@ -31,22 +22,31 @@ class gameApiController {
             $sort = $_GET["sort"];
             $order = $_GET["order"];
             if($order == "DESC" || $order == "desc" || $order == "ASC" ||  $order == "asc" ){
-                $this->orderBy($sort,$order);
+                $game = $this->model->orderBy($sort,$order);
             }else{
                 $this->view->response("es invalido el parametro",400);
             }
         }
-
+        
         /*  ==================================================================
                                         PAGINADOR
             ===================================================================== */
-        
+
+        else if (!empty ($_GET ['starAt'] ) && !empty ($_GET ['endAt'])){
+            $starAt = $_GET ['starAt'];
+            $endAt= $_GET['endAt'];
+
+                //traigo el array de los nombres de las columnas de las tablas
+            $game =  $this->model->getLimit($starAt,$endAt);
+            
+        }
 
         /*  ==================================================================
-                                        NO SE
+                                        TRAER TODO
             ===================================================================== */
-
-        $game = $this->model->getGames();
+        else{
+            $game = $this->model->getGames();
+        }
         if($game)
             return $this->view->response($game, 200);  
         else{
@@ -80,9 +80,10 @@ class gameApiController {
         $name = $body->name;
         $price = $body->price;
         $id_category_fk = $body->id_category_fk;
-        
+        $imagen = $body->imagen;
 
-        if(!empty($name) && !empty($price) && !empty($id_category_fk)){
+        var_dump($name,$price,$id_category_fk);
+        if(!empty($name) && !empty($price) || ($id_category_fk)){
 
             if($_FILES["img"]["type"] == "image/jpg" ||
             $_FILES["img"]["type"] == "image/jpeg" ||
@@ -92,7 +93,7 @@ class gameApiController {
                 $this->view->response("Se inserto con el id = $id",200);
             }else{
                 $this->model->insertGame($name,$price,$id_category_fk);
-                $this->view->response("Se modifico",200);
+                $this->view->response("Se creo un nuevo videogame",200);
             }
         }else{
             $this->view->response("No se pudo insertar",500);
@@ -108,8 +109,7 @@ class gameApiController {
         $price = $body->price;
         $id_category_fk = $body->id_category_fk;
         $imagen = $body->imagen;
-        
-        if(!empty($name) && !empty($price) && !empty($id_category_fk)){
+        if(!empty($name) && !empty($price) && !empty($id_category_fk) && !empty($idGame)){
             if( $_FILES["img"]["type"] == "image/jpg" ||
             $_FILES["img"]["type"] == "image/jpeg" ||
             $_FILES["img"]["type"] == "image/png"){

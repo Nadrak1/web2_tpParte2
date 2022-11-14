@@ -1,7 +1,6 @@
 <?php
-require_once 'libs/Router.php';  //CHEQUEAR SI FUNCA
+require_once 'libs/Router.php';  
 require_once "Controller/gameApiController.php";
-require_once "Controller/categoryApiController.php";
 
 // crea el router
 $router = new Router();
