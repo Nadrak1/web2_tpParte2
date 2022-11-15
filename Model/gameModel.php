@@ -6,16 +6,8 @@ function __construct(){
         $this->db = new PDO('mysql:host=localhost;'.'dbname=web2_tp;charset=utf8', 'root', '');//se conecta a la abse de datos (OJO CON dbname= poner el nombre de nuestra tabla)//
     }
 
-    public function getColumns() {
-                
-        $query = $this->db->prepare("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'business' and TABLE_NAME = 'videogames' order by ORDINAL_POSITION");//selecciono toda la lista de la tabla videogame
-        $query->execute();                  //envio la consulta        
-        $columns = $query->fetchAll(PDO::FETCH_ASSOC); // devuelve un arreglo de objetos
-        $columns= array ( "*", "id", "name", "price","id_category_fk","imagen");
-        return $columns;  //reenvia el arreglo al controlador
-        
-        
-        }
+
+
     function orderBy($sort,$order){
         $sentencia = $this->db->prepare("SELECT a.id,a.name,a.price,a.imagen, b.genre FROM videogame a INNER JOIN category b ON a.id_category_fk = b.id ORDER BY $sort $order"); 
         $sentencia->execute();

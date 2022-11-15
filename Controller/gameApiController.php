@@ -32,10 +32,10 @@ class gameApiController {
                                         PAGINADOR
             ===================================================================== */
 
-        else if (!empty ($_GET ['starAt'] ) && !empty ($_GET ['endAt'])){
+        else if (!empty ($_GET ['starAt'] ) && !empty ($_GET ['endAt']) &&  is_numeric($_GET ['starAt']) && is_numeric($_GET ['endAt'])){
             $starAt = $_GET ['starAt'];
             $endAt= $_GET['endAt'];
-
+            
                 //traigo el array de los nombres de las columnas de las tablas
             $game =  $this->model->getLimit($starAt,$endAt);
             
@@ -82,12 +82,8 @@ class gameApiController {
         $id_category_fk = $body->id_category_fk;
         $imagen = $body->imagen;
 
-        var_dump($name,$price,$id_category_fk);
-        if(!empty($name) && !empty($price) || ($id_category_fk)){
-
-            if($_FILES["img"]["type"] == "image/jpg" ||
-            $_FILES["img"]["type"] == "image/jpeg" ||
-            $_FILES["img"]["type"] == "image/png"){
+        if(!empty($name) && isset($price) && !empty($id_category_fk) ){
+            if($imagen == "image/jpg" || $imagen == "image/jpeg" || $imagen == "image/png"){ // REVISAR
                 $imagen = $body->imagen;
                 $id = $this->model->insertGame($name,$price,$id_category_fk,$imagen); //el $id solo nos dice 
                 $this->view->response("Se inserto con el id = $id",200);
@@ -109,12 +105,10 @@ class gameApiController {
         $price = $body->price;
         $id_category_fk = $body->id_category_fk;
         $imagen = $body->imagen;
-        if(!empty($name) && !empty($price) && !empty($id_category_fk) && !empty($idGame)){
-            if( $_FILES["img"]["type"] == "image/jpg" ||
-            $_FILES["img"]["type"] == "image/jpeg" ||
-            $_FILES["img"]["type"] == "image/png"){
 
-                $this->model->updategameFromDB($name,$price,$id_category_fk,$_FILES["img"]["tmp_name"],$idGame);
+        if(!empty($name) && isset($price) && !empty($id_category_fk) && !empty($idGame)){
+            if($imagen == "image/jpg" || $imagen == "image/jpeg" || $imagen == "image/png"){ // REVISAR
+                $this->model->updategameFromDB($name,$price,$id_category_fk,$imagen,$idGame);
                 $this->view->response("Se modifico y con imagen",200);
             }else{
                 $this->model->updategameFromDB($name,$price,$id_category_fk,$imagen= null,$idGame);
