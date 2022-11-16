@@ -7,6 +7,12 @@ function __construct(){
     }
 
 
+    function getLimitAndOrderBY($sort,$order,$starAt,$endAt){
+        $sentencia = $this->db->prepare("SELECT a.id,a.name,a.price,a.imagen, b.genre FROM videogame a INNER JOIN category b ON a.id_category_fk = b.id ORDER BY $sort $order LIMIT $starAt, $endAt"); 
+        $sentencia->execute();
+        $game = $sentencia->fetchAll(PDO::FETCH_OBJ);
+        return $game;   
+    }
 
     function orderBy($sort,$order){
         $sentencia = $this->db->prepare("SELECT a.id,a.name,a.price,a.imagen, b.genre FROM videogame a INNER JOIN category b ON a.id_category_fk = b.id ORDER BY $sort $order"); 

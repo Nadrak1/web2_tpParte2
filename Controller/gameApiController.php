@@ -13,12 +13,27 @@ class gameApiController {
 
 
     function showAllGames($params = null){ 
-        
+        /*  ==================================================================
+                                    PAGINADOR Y ORDER BY
+        ===================================================================== */
+        if (!empty($_GET ['starAt'] ) && !empty($_GET ['endAt']) &&  is_numeric($_GET ['starAt']) 
+            && is_numeric($_GET['endAt']) && !empty($_GET["sort"]) && !empty($_GET["order"])){
+            $starAt = $_GET ['starAt'];
+            $endAt= $_GET['endAt'];
+            $sort = $_GET["sort"];
+            $order = $_GET["order"];
+
+            if($order == "DESC" || $order == "desc" || $order == "ASC" ||  $order == "asc" ){
+                $game =  $this->model->getLimitAndOrderBY($sort,$order,$starAt,$endAt);
+            }else{
+            $this->view->response("es invalido el parametro",400);
+            }
+    }
         /*  ==================================================================
                                         EL ORDER BY
             ===================================================================== */
 
-        if(!empty($_GET["sort"]) && !empty($_GET["order"])){
+        else if(!empty($_GET["sort"]) && !empty($_GET["order"])){
             $sort = $_GET["sort"];
             $order = $_GET["order"];
             if($order == "DESC" || $order == "desc" || $order == "ASC" ||  $order == "asc" ){
@@ -77,19 +92,20 @@ class gameApiController {
     function createGame($params = null){
         $body = $this->getBody();
 
-        $name = $body->name;
-        $price = $body->price;
-        $id_category_fk = $body->id_category_fk;
-        $imagen = $body->imagen;
+        
+        if(!empty($body->name) && !empty($body->price) && !empty($body->id_category_fk) ){
+            $name = $body->name;
+            $price = $body->price;
+            $id_category_fk = $body->id_category_fk;
+            $imagen = $body->imagen;
 
-        if(!empty($name) && isset($price) && !empty($id_category_fk) ){
             if($imagen == "image/jpg" || $imagen == "image/jpeg" || $imagen == "image/png"){ // REVISAR
                 $imagen = $body->imagen;
                 $id = $this->model->insertGame($name,$price,$id_category_fk,$imagen); //el $id solo nos dice 
-                $this->view->response("Se inserto con el id = $id",200);
+                $this->view->response("Se crei un nuevo videogame y con imagen",200);
             }else{
-                $this->model->insertGame($name,$price,$id_category_fk);
-                $this->view->response("Se creo un nuevo videogame",200);
+                $id = $this->model->insertGame($name,$price,$id_category_fk);
+                $this->view->response("Se creo un nuevo videogame y sin imagen",200);
             }
         }else{
             $this->view->response("No se pudo insertar",500);
