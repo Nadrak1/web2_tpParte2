@@ -65,3 +65,11 @@ Parametro: El startAt(va a ser un numero que especifica por donde arranca) y el 
 body: ninguno.Pero en el params debemos especificar en KEY el parametro y en value el valor por el cual buscar
 
 ![image](https://user-images.githubusercontent.com/103833940/201802722-52479230-c892-4502-bad2-afdd1f7fae00.png)
+
+7-PAGINACION Y ORDERBY
+uri: http://localhost/WEB2_TpPart2/api/videogame?sort=id&order=desc&starAt=1&endAt=2
+Endpoint: GET
+Parametro: el sort que especificamos por cual atributo queremos ordenar y el ORDER que decimos de que manera y el startAt(va a ser un numero que especifica por donde arranca) y el endAt(va a ser un numero que especifica por donde termina),
+body: ninguno.Pero en el params debemos especificar en KEY el parametro y en value el valor por el cual buscar de los 4 
+
+![image](https://user-images.githubusercontent.com/103833940/201802722-52479230-c892-4502-bad2-afdd1f7fae00.png)
