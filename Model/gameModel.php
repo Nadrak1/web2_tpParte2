@@ -6,6 +6,12 @@ function __construct(){
         $this->db = new PDO('mysql:host=localhost;'.'dbname=web2_tp;charset=utf8', 'root', '');//se conecta a la abse de datos (OJO CON dbname= poner el nombre de nuestra tabla)//
     }
 
+    public function getColumns() {
+
+        $columns= array( "*", "id", "name", "price","id_category_fk","imagen");
+        return $columns;  //reenvia el arreglo al controlador
+
+        }
 
     function getLimitAndOrderBY($sort,$order,$starAt,$endAt){
         $sentencia = $this->db->prepare("SELECT a.id,a.name,a.price,a.imagen, b.genre FROM videogame a INNER JOIN category b ON a.id_category_fk = b.id ORDER BY $sort $order LIMIT $starAt, $endAt"); 

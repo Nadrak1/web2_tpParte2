@@ -23,12 +23,14 @@ class gameApiController {
             $sort = $_GET["sort"];
             $order = $_GET["order"];
 
-            if($order == "DESC" || $order == "desc" || $order == "ASC" ||  $order == "asc" ){
+            $columns=$this->model->getColumns();
+
+            if((in_array($sort, $columns)) && ($order == "DESC" || $order == "desc" || $order == "ASC" ||  $order == "asc")){
                 $game =  $this->model->getLimitAndOrderBY($sort,$order,$starAt,$endAt);
             }else{
             $this->view->response("es invalido el parametro",400);
             }
-    }
+        }
         /*  ==================================================================
                                         EL ORDER BY
             ===================================================================== */
@@ -36,7 +38,8 @@ class gameApiController {
         else if(!empty($_GET["sort"]) && !empty($_GET["order"])){
             $sort = $_GET["sort"];
             $order = $_GET["order"];
-            if($order == "DESC" || $order == "desc" || $order == "ASC" ||  $order == "asc" ){
+            //$columns=$this->model->getColumns();
+            if(/*(in_array($sort, $columns)) && */  ($order == "DESC" || $order == "desc" || $order == "ASC" ||  $order == "asc")){
                 $game = $this->model->orderBy($sort,$order);
             }else{
                 $this->view->response("es invalido el parametro",400);
@@ -89,11 +92,22 @@ class gameApiController {
         }
     }
 
+    private function checkinputs($body){         
+        foreach($body as $k => $v){             
+            if(empty($v) || $v==NULL){                 
+                return true;             
+            }             
+            else if (!is_numeric($v) && ctype_space($v)){              
+                return true;             
+            }         
+        }         
+        return false;     
+    }
+
     function createGame($params = null){
         $body = $this->getBody();
-
         
-        if(!empty($body->name) && !empty($body->price) && !empty($body->id_category_fk) ){
+        if($this->checkinputs($body)) {
             $name = $body->name;
             $price = $body->price;
             $id_category_fk = $body->id_category_fk;
@@ -122,7 +136,7 @@ class gameApiController {
         $id_category_fk = $body->id_category_fk;
         $imagen = $body->imagen;
 
-        if(!empty($name) && isset($price) && !empty($id_category_fk) && !empty($idGame)){
+        if($this->checkinputs($body)){
             if($imagen == "image/jpg" || $imagen == "image/jpeg" || $imagen == "image/png"){ // REVISAR
                 $this->model->updategameFromDB($name,$price,$id_category_fk,$imagen,$idGame);
                 $this->view->response("Se modifico y con imagen",200);
